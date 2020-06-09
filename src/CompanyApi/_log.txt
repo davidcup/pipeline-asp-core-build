@@ -1,0 +1,39 @@
+2020-06-09 19:50:54.928 +02:00 [INF] User profile is available. Using 'C:\Users\David\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2020-06-09 19:51:00.409 +02:00 [INF] Entity Framework Core 2.2.6-servicing-10079 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2020-06-09 19:51:01.254 +02:00 [INF] Executed DbCommand (45ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+PRAGMA foreign_keys=ON;
+2020-06-09 19:51:01.301 +02:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+PRAGMA foreign_keys=ON;
+2020-06-09 19:51:01.326 +02:00 [INF] Executed DbCommand (15ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "type" = 'table' AND "rootpage" IS NOT NULL;
+2020-06-09 19:51:01.627 +02:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+PRAGMA foreign_keys=ON;
+2020-06-09 19:51:01.673 +02:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM "Companies" AS "c")
+    THEN 1 ELSE 0
+END
+2020-06-09 19:51:01.752 +02:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+PRAGMA foreign_keys=ON;
+2020-06-09 19:51:01.763 +02:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM "Departments" AS "d")
+    THEN 1 ELSE 0
+END
+2020-06-09 19:51:01.791 +02:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+PRAGMA foreign_keys=ON;
+2020-06-09 19:51:01.803 +02:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM "Employees" AS "e")
+    THEN 1 ELSE 0
+END
+2020-06-09 19:51:04.562 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5002/api/employees  
+2020-06-09 19:51:05.020 +02:00 [WRN] Failed to determine the https port for redirect.
+2020-06-09 19:51:05.455 +02:00 [INF] Request finished in 897.1564ms 404 
+2020-06-09 19:51:40.460 +02:00 [INF] User profile is available. Using 'C:\Users\David\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
