@@ -13,7 +13,11 @@ pipeline {
   }	
   
   stages {
-        stage('build') {
+	    stage('Restore') {			
+			sh(script: 'dotnet restore AspNetCoreApiDemo.sln', returnStdout: true);			
+		  }
+		  
+        stage('Build') {
             steps {
                sh "dotnet build AspNetCoreApiDemo.sln -c Release"
             }
