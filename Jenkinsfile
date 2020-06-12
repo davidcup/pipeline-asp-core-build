@@ -15,7 +15,8 @@ pipeline {
   stages {
         stage('build') {
             steps {
-               sh "echo 'hello from docker inside docker'"
+               sh(script: "dotnet publish AspNetCoreApiDemo.sln -c Release ", returnStdout: true)
+				}
             }
         }
     }
