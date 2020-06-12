@@ -13,8 +13,10 @@ pipeline {
   }	
   
   stages {
-	    stage('Restore') {			
-			sh(script: 'dotnet restore AspNetCoreApiDemo.sln', returnStdout: true);			
+	    stage('Restore') {		
+             steps {		
+		     	sh(script: 'dotnet restore AspNetCoreApiDemo.sln', returnStdout: true)	
+			 }
 		  }
 		  
         stage('Build') {
