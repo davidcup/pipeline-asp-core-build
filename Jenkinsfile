@@ -15,8 +15,7 @@ pipeline {
   stages {
         stage('build') {
             steps {
-               sh(script: "dotnet publish AspNetCoreApiDemo.sln -c Release ", returnStdout: true)
-				}
+               sh(script: "dotnet build AspNetCoreApiDemo.sln -c Release ", returnStdout: true)
             }
         }
     }
