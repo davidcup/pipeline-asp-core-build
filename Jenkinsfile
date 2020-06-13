@@ -26,7 +26,7 @@ pipeline {
 		  
 		stage('Sonar Begin') {
 			steps {	           
-				sh "dotnet sonarscanner begin \
+				sh "dotnet /opt/sonar-scanner/SonarScanner.MSBuild.dll begin \
 				   /k:aspnetcore-apidemo \
 				   /v:${version} \
 				   /d:sonar.host.url='http://10.0.0.11:9095/' \
@@ -45,7 +45,7 @@ pipeline {
 		
 		stage('Sonar End') {
 			steps {					
-				sh 'dotnet sonarscanner end /d:sonar.login="$sonar-token"'				
+				sh 'dotnet /opt/sonar-scanner/SonarScanner.MSBuild.dll end /d:sonar.login="$sonar-token"'				
 			}
 		}
     }
