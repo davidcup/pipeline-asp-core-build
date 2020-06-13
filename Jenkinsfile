@@ -28,23 +28,33 @@ pipeline {
 			environment {
 				sonarqubeScannerHome = tool 'SonarQubeScanner'
 			}
-			steps {
-        withSonarQubeEnv('sonarqube') {
-            sh "${sonarqubeScannerHome}/sonar-scanner-4.3.0.2102/bin/sonar-scanner"
-        }
-        timeout(time: 10, unit: 'MINUTES') {
-            waitForQualityGate abortPipeline: true
-        }
-    }
+			steps {	           
+			    script{				
+					withSonarQubeEnv('sonarqube') {
+						sh "dotnet ${sonarqubeScannerHome}/SonarScanner.MSBuild.dll begin \
+						   /k:'aspnetcore-apidemo' \
+						   /v:'${version}' \
+						   /d:sonar.host.url='http://10.0.0.11:9095' \
+						   /d:sonar.login='${sonar-token}' \
+						   /d:sonar.exclusions='**/obj/**, **/bin/**' \
+						   /d:sonar.cs.opencover.reportsPaths='${customWorkspace}/coverage/api.opencover.xml' \
+						   /d:sonar.verbose=true"	
+					}					   
+			   }
+			}
         }  
 		  
         stage('Build') {
             steps {
-               sh "dotnet build AspNetCoreApiDemo.sln -c Release"
+               sh 'dotnet build AspNetCoreApiDemo.sln -c Release'
             }
         }
 		
-		
+		stage('Sonar End') {
+			steps {					
+				sh 'dotnet /opt/sonar-scanner/SonarScanner.MSBuild.dll end /d:sonar.login="${sonar-token}"'				
+			}
+		}
     }
   
 }
