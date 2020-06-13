@@ -14,7 +14,7 @@ def notifyBuild(def buildStatus) {
     // set default of build status
     buildStatus =  buildStatus ?: 'STARTED'
     env.JOB_DISPLAYNAME = jobName
-    env.PREVIOUS_BUILD_RESULT = currentBuild.rawBuild.getPreviousBuild()?.getResult().toString()
+    env.PREVIOUS_BUILD_RESULT = currentBuild.getPreviousBuild()?.getResult().toString()
     def colorMap = [ 'STARTED': '#F0FFFF', 'SUCCESS': '#008B00', 'FAILURE': '#FF0000' ]
 
     // Define messages contents
