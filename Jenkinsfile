@@ -6,6 +6,31 @@ def slackChannel = "#alerts"
 
 // define the slack notify build function
 
+@NonCPS
+def notifyBuild(def buildStatus) {
+
+    // set default of build status
+    buildStatus =  buildStatus ?: 'STARTED'
+    env.JOB_DISPLAYNAME = Jenkins.instance.getJob("${env.JOB_NAME}").displayName
+    env.PREVIOUS_BUILD_RESULT = currentBuild.rawBuild.getPreviousBuild()?.getResult().toString()
+    def colorMap = [ 'STARTED': '#F0FFFF', 'SUCCESS': '#008B00', 'FAILURE': '#FF0000' ]
+
+    // Define messages contents
+    def subject = "Pipeline: ${env.JOB_DISPLAYNAME} - #${env.BUILD_NUMBER} ${buildStatus}"
+    def summary = "${subject} (${env.BUILD_URL})"
+    def colorName = colorMap[buildStatus]
+
+    // Send notifications only status changed.
+    if ("${buildStatus}" != "${env.PREVIOUS_BUILD_RESULT}") {
+        slackSend (color: colorName, message: summary, channel: slackChannel)
+    }
+}
+
+@NonCPS
+def getBuildUser() {
+    return currentBuild.rawBuild.getCause(Cause.UserIdCause).getUserId()
+}
+
 
 pipeline {
 	
@@ -67,40 +92,21 @@ pipeline {
         success {
 			script {
                 BUILD_USER = getBuildUser()
+				notifyBuild(currentBuild.result)
             }
-            notifyBuild(currentBuild.result)
+            
         }
         failure {
-             notifyBuild(currentBuild.result)
+             script {                
+				notifyBuild(currentBuild.result)
+            }
         }
         unstable {
-             notifyBuild(currentBuild.result)
+             script {              
+				notifyBuild(currentBuild.result)
+            }
         }
     }
   
 }
 
-void  notifyBuild(def buildStatus) {
-
-    def jobName = env.JOB_NAME    
-    def currentJob = Jenkins.instance.getItemByFullName(jobName)
-    // set default of build status
-    buildStatus =  buildStatus ?: 'STARTED'
-    env.JOB_DISPLAYNAME = Jenkins.instance.getItemByFullName(jobName)
-    env.PREVIOUS_BUILD_RESULT = currentBuild.rawBuild.getPreviousBuild()?.getResult().toString()
-    def colorMap = [ 'STARTED': '#F0FFFF', 'SUCCESS': '#008B00', 'FAILURE': '#FF0000' ]
-
-    // Define messages contents
-    def subject = "Pipeline: ${env.JOB_DISPLAYNAME} - #${env.BUILD_NUMBER} ${buildStatus}"
-    def summary = "${subject} (${env.BUILD_URL})"
-    def colorName = colorMap[buildStatus]
-
-    // Send notifications only status changed.
-    if ("${buildStatus}" != "${env.PREVIOUS_BUILD_RESULT}") {
-        slackSend (color: colorName, message: summary, channel: slackChannel)
-    }
-}
-
-void  getBuildUser() {
-    return currentBuild.rawBuild.getCause(Cause.UserIdCause).getUserId()
-}
