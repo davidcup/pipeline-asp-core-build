@@ -9,9 +9,11 @@ def slackChannel = "#alerts"
 @NonCPS
 def notifyBuild(def buildStatus) {
 
+    def jobName = env.JOB_NAME
+   
     // set default of build status
     buildStatus =  buildStatus ?: 'STARTED'
-    env.JOB_DISPLAYNAME = ${env.JOB_NAME}
+    env.JOB_DISPLAYNAME = jobName
     env.PREVIOUS_BUILD_RESULT = currentBuild.rawBuild.getPreviousBuild()?.getResult().toString()
     def colorMap = [ 'STARTED': '#F0FFFF', 'SUCCESS': '#008B00', 'FAILURE': '#FF0000' ]
 
