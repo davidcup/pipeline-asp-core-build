@@ -1,5 +1,5 @@
 
-def version = "1.0.0"
+def version = "1.0"
 def slackChannel = "alerts"
 
 
@@ -45,7 +45,7 @@ pipeline {
 		
 		stage('Sonar End') {
 			steps {					
-				sh 'dotnet /opt/sonar-scanner/SonarScanner.MSBuild.dll end /d:sonar.login="${sonar-token}"'				
+				sh 'dotnet /opt/sonar-scanner/SonarScanner.MSBuild.dll end'				
 			}
 		}
     }
