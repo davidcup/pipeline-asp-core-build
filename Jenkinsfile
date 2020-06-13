@@ -1,5 +1,5 @@
 
-def version = "1.0"
+def version = "1.0.0"
 def slackChannel = "alerts"
 
 
@@ -31,7 +31,7 @@ pipeline {
 			steps {	           
 			    script{				
 					withSonarQubeEnv('sonarqube') {
-						sh "dotnet /opt/sonar-scanner/SonarScanner.MSBuild.dll begin /k:'aspnetcore-apidemo' /v:'${version}'"
+						sh "dotnet /opt/sonar-scanner/SonarScanner.MSBuild.dll begin /k:'aspnetcore-apidemo' /v:'${version}' /d:sonar.host.url='http://10.0.0.11:9095'"
 					}					   
 			   }
 			}
