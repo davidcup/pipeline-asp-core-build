@@ -26,14 +26,19 @@ pipeline {
 		  
 		stage('Sonar Begin') {
 			steps {	           
-				sh "dotnet /opt/sonar-scanner/SonarScanner.MSBuild.dll begin \
-				   /k:aspnetcore-apidemo \
-				   /v:${version} \
-				   /d:sonar.host.url='http://10.0.0.11:9095/' \
-				   /d:sonar.login='$sonar-token' \
-				   /d:sonar.exclusions='**/obj/**, **/bin/**' \
-				   /d:sonar.cs.opencover.reportsPaths='.sonarqube/coverage/api.opencover.xml' \
-				   /d:sonar.verbose=true"				
+			    script{
+					def sonarqubeScannerHome = tool name: 'SonarQubeScanner'
+					withCredentials([string(credentialsId: 'sonar-token', variable: 'sonarLogin')]) {
+						sh "dotnet ${sonarqubeScannerHome}/SonarScanner.MSBuild.dll begin \
+						   /k:aspnetcore-apidemo \
+						   /v:${version} \
+						   /d:sonar.host.url='http://10.0.0.11:9095' \
+						   /d:sonar.login='${sonar-token}' \
+						   /d:sonar.exclusions='**/obj/**, **/bin/**' \
+						   /d:sonar.cs.opencover.reportsPaths='.sonarqube/coverage/api.opencover.xml' \
+						   /d:sonar.verbose=true"	
+					}					   
+			   }
 			}
         }  
 		  
@@ -45,7 +50,7 @@ pipeline {
 		
 		stage('Sonar End') {
 			steps {					
-				sh 'dotnet /opt/sonar-scanner/SonarScanner.MSBuild.dll end /d:sonar.login="$sonar-token"'				
+				sh 'dotnet /opt/sonar-scanner/SonarScanner.MSBuild.dll end /d:sonar.login="${sonar-token}"'				
 			}
 		}
     }
