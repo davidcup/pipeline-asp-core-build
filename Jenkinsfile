@@ -25,21 +25,17 @@ pipeline {
 	    }
 		  
 		stage('Sonar Begin') {
-			steps {	           
-			    script{
-					def sonarqubeScannerHome = tool name: 'SonarQubeScanner'
-					withCredentials([string(credentialsId: 'sonar-token', variable: 'sonarLogin')]) {
-						sh "dotnet ${sonarqubeScannerHome}/SonarScanner.MSBuild.dll begin \
-						   /k:aspnetcore-apidemo \
-						   /v:${version} \
-						   /d:sonar.host.url='http://10.0.0.11:9095' \
-						   /d:sonar.login='${sonar-token}' \
-						   /d:sonar.exclusions='**/obj/**, **/bin/**' \
-						   /d:sonar.cs.opencover.reportsPaths='.sonarqube/coverage/api.opencover.xml' \
-						   /d:sonar.verbose=true"	
-					}					   
-			   }
+			environment {
+				sonarqubeScannerHome = tool 'SonarQubeScanner'
 			}
+			steps {
+        withSonarQubeEnv('sonarqube') {
+            sh "${scannerHome}/bin/sonar-scanner"
+        }
+        timeout(time: 10, unit: 'MINUTES') {
+            waitForQualityGate abortPipeline: true
+        }
+    }
         }  
 		  
         stage('Build') {
@@ -48,11 +44,7 @@ pipeline {
             }
         }
 		
-		stage('Sonar End') {
-			steps {					
-				sh 'dotnet /opt/sonar-scanner/SonarScanner.MSBuild.dll end /d:sonar.login="${sonar-token}"'				
-			}
-		}
+		
     }
   
 }
