@@ -1,5 +1,5 @@
 
-def version = "1.0.0"
+def version = "1.0"
 def slackChannel = "alerts"
 
 
