@@ -24,15 +24,16 @@ pipeline {
 			 }
 	    }
 		  
-		stage("Sonar Begin") {
+		stage('Sonar Begin') {
             withCredentials([string(credentialsId: 'sonar-token', variable: 'sonar-token')]) {
-            sh 'dotnet sonarscanner begin 
-			   /k:"aspnetcore-apidemo" 
-			   /v:${version}
-			   /d:sonar.host.url="http://10.0.0.11:9095/" 
-			   /d:sonar.login="$sonar-token" 
-			   /d:sonar.exclusions="**/obj/**, **/bin/**" 
-			   /d:sonar.cs.opencover.reportsPaths=".sonarqube/coverage/api.opencover.xml"' 
+            sh "dotnet sonarscanner begin \
+			   /k:aspnetcore-apidemo \
+			   /v:${version} \
+			   /d:sonar.host.url='http://10.0.0.11:9095/' \
+			   /d:sonar.login='$sonar-token' \
+			   /d:sonar.exclusions='**/obj/**, **/bin/**' \
+			   /d:sonar.cs.opencover.reportsPaths='.sonarqube/coverage/api.opencover.xml' \
+			   /d:sonar.verbose=true"
             }
         }  
 		  
@@ -42,7 +43,7 @@ pipeline {
             }
         }
 		
-		stage("Sonar End") {
+		stage('Sonar End') {
 			withCredentials([string(credentialsId: 'sonar-token', variable: 'sonar-token')]) {
 				sh 'dotnet sonarscanner end /d:sonar.login="$sonar-token"'
 			}
