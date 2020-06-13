@@ -35,9 +35,7 @@ pipeline {
 						   /k:'aspnetcore-apidemo' \
 						   /v:'${version}' \
 						   /d:sonar.host.url='http://10.0.0.11:9095' \
-						   /d:sonar.login='${sonar-token}' \
-						   /d:sonar.exclusions='**/obj/**, **/bin/**' \
-						   /d:sonar.verbose=true"	
+						   /d:sonar.login='${sonar-token}'"
 					}					   
 			   }
 			}
