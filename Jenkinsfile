@@ -2,7 +2,6 @@ import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 
 def version = "1.0"
-def slackChannel = "#alerts"
 
 // define the slack notify build function
 
@@ -24,7 +23,7 @@ def notifyBuild(def buildStatus) {
 
     // Send notifications only status changed.
     if ("${buildStatus}" != "${env.PREVIOUS_BUILD_RESULT}") {
-        slackSend (color: colorName, message: summary, channel: slackChannel)
+        slackSend (color: colorName, message: summary, channel: "#alerts")
     }
 }
 
