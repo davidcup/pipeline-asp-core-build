@@ -36,7 +36,7 @@ pipeline {
 			 }
 	    }
 		  
-		stage('\u278A Sonar Begin') {
+		stage('\u278B Sonar Begin') {
 			environment {
 				sonarqubeScannerHome = tool 'SonarQubeScanner'
 			}
@@ -80,7 +80,7 @@ pipeline {
   
 }
 
-def notifyBuild(def buildStatus) {
+void  notifyBuild(def buildStatus) {
 
     // set default of build status
     buildStatus =  buildStatus ?: 'STARTED'
@@ -99,6 +99,6 @@ def notifyBuild(def buildStatus) {
     }
 }
 
-def getBuildUser() {
+void  getBuildUser() {
     return currentBuild.rawBuild.getCause(Cause.UserIdCause).getUserId()
 }
