@@ -31,7 +31,7 @@ pipeline {
 			steps {	           
 			    script{				
 					withSonarQubeEnv('sonarqube') {
-						sh "dotnet /opt/sonar-scanner/SonarScanner.MSBuild.dll begin /k:'aspnetcore-apidemo'"
+						sh "dotnet /opt/sonar-scanner/SonarScanner.MSBuild.dll begin /k:'aspnetcore-apidemo' /v:'${version}'"
 					}					   
 			   }
 			}
