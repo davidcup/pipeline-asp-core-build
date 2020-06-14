@@ -44,7 +44,7 @@ def getBuildUser() {
 def sendNotifySlack(text, color) {
     def slackURL = 'https://hooks.slack.com/services/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'
     def jenkinsIcon = 'https://wiki.jenkins-ci.org/download/attachments/2916393/logo.png'
-    def slackNotificationChannel = 'alerts'
+    def slackNotificationChannel = '#alerts'
     def slackBotName = getBuildUser()
 
     def payload = """
