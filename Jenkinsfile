@@ -123,39 +123,41 @@ pipeline {
 		  
         stage('\u278C Build') {
             steps {
-				def buildColor = currentBuild.result == null ? "good" : "warning"
-				def buildStatus = currentBuild.result == null ? "Success" : currentBuild.result
-				def jobName = "${env.JOB_NAME}"
+				script{
+					def buildColor = currentBuild.result == null ? "good" : "warning"
+					def buildStatus = currentBuild.result == null ? "Success" : currentBuild.result
+					def jobName = "${env.JOB_NAME}"
 
-				// Strip the branch name out of the job name (ex: "Job Name/branch1" -> "Job Name")
-				jobName = jobName.getAt(0..(jobName.indexOf('/') - 1))
-				
-				
-				sh(script: 'dotnet restore AspNetCoreApiDemo.sln', returnStdout: true)
-				
-			    sh 'dotnet build AspNetCoreApiDemo.sln -c Release'
-				
-				notifySlack("", slackNotificationChannel, [
-                    [
-                        title: "${jobName}, Build #${env.BUILD_NUMBER}",
-                        title_link: "${env.BUILD_URL}",
-                        color: "${buildColor}",
-                        author_name: "${author}",
-                        text: "${buildStatus}\n${author}",
-                        fields: [
-                            [
-                                title: "Branch",
-                                value: "${env.GIT_BRANCH}",
-                                short: true
-                            ],
-                            [
-                                title: "Last Commit",
-                                value: "${message}",
-                                short: false
-                            ]
-                        ]
-                    ]
-                ])
+					// Strip the branch name out of the job name (ex: "Job Name/branch1" -> "Job Name")
+					jobName = jobName.getAt(0..(jobName.indexOf('/') - 1))
+					
+					
+					sh(script: 'dotnet restore AspNetCoreApiDemo.sln', returnStdout: true)
+					
+					sh 'dotnet build AspNetCoreApiDemo.sln -c Release'
+					
+					notifySlack("", slackNotificationChannel, [
+						[
+							title: "${jobName}, Build #${env.BUILD_NUMBER}",
+							title_link: "${env.BUILD_URL}",
+							color: "${buildColor}",
+							author_name: "${author}",
+							text: "${buildStatus}\n${author}",
+							fields: [
+								[
+									title: "Branch",
+									value: "${env.GIT_BRANCH}",
+									short: true
+								],
+								[
+									title: "Last Commit",
+									value: "${message}",
+									short: false
+								]
+							]
+						]
+					])
+				}
            
             }
         }
