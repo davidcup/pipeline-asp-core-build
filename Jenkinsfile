@@ -100,14 +100,14 @@ pipeline {
 	    stage('\u278A Init') {		
              steps {
 				script{		
+				    def repoName = env.GIT_URL.replaceFirst(/^.*\/([^\/]+?).git$/, '$1')
 					def buildColor = currentBuild.result == null ? "good" : "warning"					
 					def jobName = "${env.JOB_NAME}"
-					def startedBy = "Started By"
-
+					def startedBy = "Started by User"
+ 
 					// Strip the branch name out of the job name (ex: "Job Name/branch1" -> "Job Name")
 					jobName = jobName.getAt(0..(jobName.indexOf('/') - 1))
-					echo "Slack Url is ${SLACK_CREDENTIALS}"
-					
+										
 				    populateGlobalVariables()
                     notifySlack("Jenkins Build Started", slackNotificationChannel, [
 						[
@@ -115,10 +115,10 @@ pipeline {
 							title_link: "${env.BUILD_URL}",
 							color: "${buildColor}",
 							author_name: "${author}",
-							text: "${startedBy}\n${author}",
+							text: "Started by User\n${env.BUILD_USER_ID}",
 							fields: [
 								[
-									title: "Executing Branch",
+									title: "Branch",
 									value: "${env.GIT_BRANCH}",
 									short: true
 								],
@@ -148,11 +148,9 @@ pipeline {
         }  
 		  
         stage('\u278C Build') {
-            steps {
-				script{									
-					sh(script: 'dotnet restore AspNetCoreApiDemo.sln', returnStdout: true)					
-					sh(script: 'dotnet build AspNetCoreApiDemo.sln -c Release', returnStdout: true)			
-				}           
+            steps {												
+					sh 'dotnet restore AspNetCoreApiDemo.sln'				
+					sh 'dotnet build AspNetCoreApiDemo.sln -c Release'
             }
         }
 		
