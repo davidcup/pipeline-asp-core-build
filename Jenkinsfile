@@ -4,7 +4,7 @@ import hudson.tasks.test.AbstractTestResultAction
 import hudson.tasks.junit.CaseResult
 
 def version = "1.0"
-def slackNotificationChannel = "alerts"
+def slackNotificationChannel = "#alerts"
 def author = ""
 def message = ""
 def testSummary = ""
@@ -35,8 +35,9 @@ def notifyBuild(def buildStatus) {
     }
 }
 
+@NonCPS
 def notifySlack(text, channel, attachments) {
-    def slackURL = 'https://hooks.slack.com/services/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'
+    def slackURL = 'https://hooks.slack.com/services/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'
     def jenkinsIcon = 'https://wiki.jenkins-ci.org/download/attachments/2916393/logo.png'
 
     def payload = JsonOutput.toJson([text: text,
