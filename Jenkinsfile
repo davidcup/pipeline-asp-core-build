@@ -101,8 +101,8 @@ pipeline {
              steps {
 				script{		
 				     wrap([$class: 'BuildUser']) {
-                       def buildUser=${BUILD_USER}
-					 }					   
+                       def buildUser= ${env.BUILD_USER}
+								   
 					 
 				    def repoName = env.GIT_URL.replaceFirst(/^.*\/([^\/]+?).git$/, '$1')
 					def buildColor = currentBuild.result == null ? "good" : "warning"					
@@ -136,6 +136,7 @@ pipeline {
 							]
 						]
 					])			 
+					 }		
 				}
 			 }
 	    }
