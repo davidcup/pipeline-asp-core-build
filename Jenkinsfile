@@ -4,7 +4,7 @@ import hudson.tasks.test.AbstractTestResultAction
 import hudson.tasks.junit.CaseResult
 
 def version = "1.0"
-def slackNotificationChannel = "[CHANNEL_NAME]"
+def slackNotificationChannel = "alerts"
 def author = ""
 def message = ""
 def testSummary = ""
@@ -33,6 +33,20 @@ def notifyBuild(def buildStatus) {
     if ("${buildStatus}" != "${env.PREVIOUS_BUILD_RESULT}") {
         slackSend (color: colorName, message: summary, channel: "#alerts")
     }
+}
+
+def notifySlack(text, channel, attachments) {
+    def slackURL = 'https://hooks.slack.com/services/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'
+    def jenkinsIcon = 'https://wiki.jenkins-ci.org/download/attachments/2916393/logo.png'
+
+    def payload = JsonOutput.toJson([text: text,
+        channel: channel,
+        username: "Jenkins",
+        icon_url: jenkinsIcon,
+        attachments: attachments
+    ])
+
+    sh "curl -X POST --data-urlencode \'payload=${payload}\' ${slackURL}"
 }
 
 def isPublishingBranch = { ->
@@ -109,8 +123,40 @@ pipeline {
 		  
         stage('\u278C Build') {
             steps {
-			   sh(script: 'dotnet restore AspNetCoreApiDemo.sln', returnStdout: true)
-               sh 'dotnet build AspNetCoreApiDemo.sln -c Release'
+				def buildColor = currentBuild.result == null ? "good" : "warning"
+				def buildStatus = currentBuild.result == null ? "Success" : currentBuild.result
+				def jobName = "${env.JOB_NAME}"
+
+				// Strip the branch name out of the job name (ex: "Job Name/branch1" -> "Job Name")
+				jobName = jobName.getAt(0..(jobName.indexOf('/') - 1))
+				
+				
+				sh(script: 'dotnet restore AspNetCoreApiDemo.sln', returnStdout: true)
+				
+			    sh 'dotnet build AspNetCoreApiDemo.sln -c Release'
+				
+				notifySlack("", slackNotificationChannel, [
+                    [
+                        title: "${jobName}, Build #${env.BUILD_NUMBER}",
+                        title_link: "${env.BUILD_URL}",
+                        color: "${buildColor}",
+                        author_name: "${author}",
+                        text: "${buildStatus}\n${author}",
+                        fields: [
+                            [
+                                title: "Branch",
+                                value: "${env.GIT_BRANCH}",
+                                short: true
+                            ],
+                            [
+                                title: "Last Commit",
+                                value: "${message}",
+                                short: false
+                            ]
+                        ]
+                    ]
+                ])
+           
             }
         }
 		
