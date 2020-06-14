@@ -104,7 +104,7 @@ pipeline {
 					def buildColor = currentBuild.result == null ? "good" : "warning"					
 					def jobName = "${env.JOB_NAME}"
 					def startedBy = "Started by User"
- 
+					echo "Detected Git Repo URL: ${repoName}"  
 					// Strip the branch name out of the job name (ex: "Job Name/branch1" -> "Job Name")
 					jobName = jobName.getAt(0..(jobName.indexOf('/') - 1))
 										
@@ -115,11 +115,11 @@ pipeline {
 							title_link: "${env.BUILD_URL}",
 							color: "${buildColor}",
 							author_name: "${author}",
-							text: "Started by User\n${env.BUILD_USER_ID}",
+							text: "Started by User\n${${BUILD_USER}}",
 							fields: [
 								[
-									title: "Branch",
-									value: "${env.GIT_BRANCH}",
+									title: "Repository Information",
+									value: "${repoName}, ${env.GIT_BRANCH}",
 									short: true
 								],
 								[
