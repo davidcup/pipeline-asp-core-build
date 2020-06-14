@@ -36,8 +36,7 @@ def notifyBuild(def buildStatus) {
 }
 
 @NonCPS
-def notifySlack(text, channel, attachments) {
-    def slackURL = 'https://hooks.slack.com/services/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'
+def notifySlack(text, channel, attachments) {   
     def jenkinsIcon = 'https://wiki.jenkins-ci.org/download/attachments/2916393/logo.png'
 
     def payload = JsonOutput.toJson([text: text,
@@ -46,8 +45,10 @@ def notifySlack(text, channel, attachments) {
         icon_url: jenkinsIcon,
         attachments: attachments
     ])
-
-    sh "curl -X POST --data-urlencode \'payload=${payload}\' ${slackURL}"
+	
+    withCredentials([string(credentialsId: 'slack-url', variable: 'slack-url')]) {
+		sh "curl -X POST --data-urlencode \'payload=${payload}\' ${slack-url}"
+	}
 }
 
 def isPublishingBranch = { ->
