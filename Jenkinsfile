@@ -100,10 +100,7 @@ pipeline {
 	    stage('\u278A Init') {		
              steps {
 				script{		
-				     wrap([$class: 'BuildUser']) {
-                       def buildUser= ${env.BUILD_USER}
-								   
-					 
+				     
 				    def repoName = env.GIT_URL.replaceFirst(/^.*\/([^\/]+?).git$/, '$1')
 					def buildColor = currentBuild.result == null ? "good" : "warning"					
 					def jobName = "${env.JOB_NAME}"
@@ -121,7 +118,7 @@ pipeline {
 							footer: "DevOps Pipeline",
                             footer_icon: "https://platform.slack-edge.com/img/default_application_icon.png",
 							author_name: "${author}",
-							text: "Started by User\n${buildUser}",
+							text: "Started by User\nAdministrator",
 							fields: [
 								[
 									title: "Repository Information",
@@ -136,7 +133,6 @@ pipeline {
 							]
 						]
 					])			 
-					 }		
 				}
 			 }
 	    }
