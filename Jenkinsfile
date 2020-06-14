@@ -114,12 +114,14 @@ pipeline {
 							title: "${jobName}, Build #${env.BUILD_NUMBER}",
 							title_link: "${env.BUILD_URL}",
 							color: "${buildColor}",
+							footer : "DevOps Pipeline",
+                            footer_icon: ":ghost:"
 							author_name: "${author}",
-							text: "Started by User\n${${BUILD_USER}}",
+							text: "Started by User\n{${BUILD_USER}}",
 							fields: [
 								[
 									title: "Repository Information",
-									value: "${repoName}, ${env.GIT_BRANCH}",
+									value: "REPO: ${repoName}, BR: ${env.GIT_BRANCH}",
 									short: true
 								],
 								[
