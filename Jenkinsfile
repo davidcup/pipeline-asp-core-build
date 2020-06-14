@@ -36,18 +36,18 @@ def notifyBuild(def buildStatus) {
 }
 
 @NonCPS
-def notifySlack(text, channel, attachments) {   
-    def jenkinsIcon = 'https://wiki.jenkins-ci.org/download/attachments/2916393/logo.png'
-
-    def payload = JsonOutput.toJson([text: text,
-        channel: channel,
-        username: "Jenkins",
-        icon_url: jenkinsIcon,
-        attachments: attachments
-    ])
+def notifySlack(text, channel, attachments) {    
 	
-    withCredentials([string(credentialsId: 'slack-url', variable: 'slack-url')]) {
-		sh "curl -X POST --data-urlencode \'payload=${payload}\' ${slack-url}"
+    withCredentials([string(credentialsId: 'slack-url', variable: 'slackurl')]) {
+		def jenkinsIcon = 'https://wiki.jenkins-ci.org/download/attachments/2916393/logo.png'
+
+		def payload = JsonOutput.toJson([text: text,
+			channel: channel,
+			username: "Jenkins",
+			icon_url: jenkinsIcon,
+			attachments: attachments
+		])
+		sh "curl -X POST --data-urlencode \'payload=${payload}\' '${slackurl}'"
 	}
 }
 
