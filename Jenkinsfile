@@ -35,19 +35,15 @@ def notifyBuild(def buildStatus) {
     }
 }
 
-@NonCPS
-def notifySlack(text, channel, attachments) {    
-	script{		
-		def jenkinsIcon = 'https://wiki.jenkins-ci.org/download/attachments/2916393/logo.png'
-
-		def payload = JsonOutput.toJson([text: text,
-			channel: channel,
-			username: "Jenkins",
-			icon_url: jenkinsIcon,
-			attachments: attachments
-		])
-		sh "curl -X POST --data-urlencode \'payload=${payload}\' ${SLACK_CREDENTIALS}"		
-	}
+def notifySlack(text, channel, attachments) {    		
+	def jenkinsIcon = 'https://wiki.jenkins-ci.org/download/attachments/2916393/logo.png'
+	def payload = JsonOutput.toJson([text: text,
+		channel: channel,
+		username: "Jenkins",
+		icon_url: jenkinsIcon,
+		attachments: attachments
+	])
+	sh "curl -X POST --data-urlencode \'payload=${payload}\' ${SLACK_CREDENTIALS}"
 }
 
 def isPublishingBranch = { ->
@@ -104,8 +100,36 @@ pipeline {
 	    stage('\u278A Init') {		
              steps {
 				script{		
-				   populateGlobalVariables()
-                   notifyBuild('STARTED')				 
+					def buildColor = currentBuild.result == null ? "good" : "warning"					
+					def jobName = "${env.JOB_NAME}"
+					def startedBy = "Started By"
+
+					// Strip the branch name out of the job name (ex: "Job Name/branch1" -> "Job Name")
+					jobName = jobName.getAt(0..(jobName.indexOf('/') - 1))
+					echo "Slack Url is ${SLACK_CREDENTIALS}"
+					
+				    populateGlobalVariables()
+                    notifySlack("Jenkins Build Started", slackNotificationChannel, [
+						[
+							title: "${jobName}, Build #${env.BUILD_NUMBER}",
+							title_link: "${env.BUILD_URL}",
+							color: "${buildColor}",
+							author_name: "${author}",
+							text: "${startedBy}\n${author}",
+							fields: [
+								[
+									title: "Executing Branch",
+									value: "${env.GIT_BRANCH}",
+									short: true
+								],
+								[
+									title: "Last Commit Message",
+									value: "${message}",
+									short: false
+								]
+							]
+						]
+					])			 
 				}
 			 }
 	    }
@@ -125,42 +149,10 @@ pipeline {
 		  
         stage('\u278C Build') {
             steps {
-				script{
-					def buildColor = currentBuild.result == null ? "good" : "warning"
-					def buildStatus = currentBuild.result == null ? "Success" : currentBuild.result
-					def jobName = "${env.JOB_NAME}"
-
-					// Strip the branch name out of the job name (ex: "Job Name/branch1" -> "Job Name")
-					jobName = jobName.getAt(0..(jobName.indexOf('/') - 1))
-					echo "Slack Url is ${SLACK_CREDENTIALS}"
-					
-					sh(script: 'dotnet restore AspNetCoreApiDemo.sln', returnStdout: true)
-					
-					sh 'dotnet build AspNetCoreApiDemo.sln -c Release'
-					
-					notifySlack("Jenkins build is running", slackNotificationChannel, [
-						[
-							title: "${jobName}, Build #${env.BUILD_NUMBER}",
-							title_link: "${env.BUILD_URL}",
-							color: "${buildColor}",
-							author_name: "${author}",
-							text: "${buildStatus}\n${author}",
-							fields: [
-								[
-									title: "Branch",
-									value: "${env.GIT_BRANCH}",
-									short: true
-								],
-								[
-									title: "Last Commit",
-									value: "${message}",
-									short: false
-								]
-							]
-						]
-					])
-				}
-           
+				script{									
+					sh(script: 'dotnet restore AspNetCoreApiDemo.sln', returnStdout: true)					
+					sh(script: 'dotnet build AspNetCoreApiDemo.sln -c Release', returnStdout: true)			
+				}           
             }
         }
 		
