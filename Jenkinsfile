@@ -65,8 +65,7 @@ def sendNotifySlack(text, color) {
 
 @NonCPS
 def notifySlack(String buildResult){
-    # def hasSummaryMatch = (buildResult =~ /\b(\w*(SUCCESS)\w*)\b/)
-
+   
     if ( buildResult == "SUCCESS" ) {
         sendNotifySlack("Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} was successful", "good")
     }
