@@ -1,8 +1,16 @@
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
+import hudson.tasks.test.AbstractTestResultAction
+import hudson.tasks.junit.CaseResult
 
 def version = "1.0"
-
+def slackNotificationChannel = "[CHANNEL_NAME]"
+def author = ""
+def message = ""
+def testSummary = ""
+def total = 0
+def failed = 0
+def skipped = 0
 // define the slack notify build function
 
 @NonCPS
@@ -29,7 +37,7 @@ def notifyBuild(def buildStatus) {
 
 @NonCPS
 def getBuildUser() {
-    return currentBuild.rawBuild.getCause(Cause.UserIdCause).getUserId()
+    return env.BUILD_USER_ID
 }
 
 
@@ -75,14 +83,14 @@ pipeline {
 			}
         }  
 		  
-        stage('\u278A Build') {
+        stage('\u278C Build') {
             steps {
 			   sh(script: 'dotnet restore AspNetCoreApiDemo.sln', returnStdout: true)
                sh 'dotnet build AspNetCoreApiDemo.sln -c Release'
             }
         }
 		
-		stage('\u278A Sonar End') {
+		stage('\u278D Sonar End') {
 			steps {					
 				sh 'dotnet /opt/sonar-scanner/SonarScanner.MSBuild.dll end'				
 			}
@@ -91,8 +99,7 @@ pipeline {
 	
 	post {
         success {
-			script {
-                BUILD_USER = getBuildUser()
+			script {                
 				notifyBuild(currentBuild.result)
             }
             
