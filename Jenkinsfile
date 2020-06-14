@@ -37,7 +37,7 @@ def notifyBuild(def buildStatus) {
 
 @NonCPS
 def notifySlack(text, channel, attachments) {
-    def slackURL = 'https://hooks.slack.com/services/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'
+    def slackURL = 'https://hooks.slack.com/services/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'
     def jenkinsIcon = 'https://wiki.jenkins-ci.org/download/attachments/2916393/logo.png'
 
     def payload = JsonOutput.toJson([text: text,
