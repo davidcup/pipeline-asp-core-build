@@ -35,50 +35,33 @@ def notifyBuild(def buildStatus) {
     }
 }
 
+def isPublishingBranch = { ->
+    return env.GIT_BRANCH == 'origin/master' || env.GIT_BRANCH =~ /release.+/
+}
+
+def isResultGoodForPublishing = { ->
+    return currentBuild.result == null
+}
+
+def getGitAuthor = {
+    def commit = sh(returnStdout: true, script: 'git rev-parse HEAD')
+    author = sh(returnStdout: true, script: "git --no-pager show -s --format='%an' ${commit}").trim()
+}
+
+def getLastCommitMessage = {
+    message = sh(returnStdout: true, script: 'git log -1 --pretty=%B').trim()
+}
+
+def populateGlobalVariables = {
+    getLastCommitMessage()
+    getGitAuthor()   
+}
+
 @NonCPS
 def getBuildUser() {
     return env.BUILD_USER_ID
 }
 
-@NonCPS
-def sendNotifySlack(text, color) {
-    def slackURL = 'https://hooks.slack.com/services/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'
-    def jenkinsIcon = 'https://wiki.jenkins-ci.org/download/attachments/2916393/logo.png'
-    def slackNotificationChannel = '#alerts'
-    def slackBotName = 'webhookbot'
-
-    def payload = """
-        {
-            "attachments":[{
-                "title": "Job: ${env.JOB_NAME}",
-                "text":"${text}",
-                "color":"${color}"
-                }],
-            "channel":"${slackNotificationChannel}",
-            "username":"${slackBotName}",
-            "icon_url":"${jenkinsIcon}"
-        }
-    """
-
-    sh "curl -X POST --data-urlencode \'payload=${payload}\' ${slackURL}"
-}
-
-@NonCPS
-def notifySlack(String buildResult){
-   
-    if ( buildResult == "SUCCESS" ) {
-        sendNotifySlack("Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} was successful", "good")
-    }
-    else if( buildResult == "FAILURE" ) { 
-        sendNotifySlack("Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} was failed", "danger")
-    }
-    else if( buildResult == "UNSTABLE" ) { 
-        sendNotifySlack("Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} was unstable", "warning")
-    }
-    else {
-        sendNotifySlack("Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} was unclear", "danger")
-    }
-}
 
 
 pipeline {
@@ -105,7 +88,8 @@ pipeline {
 	    stage('\u278A Init') {		
              steps {
 				script{		
-                   notifySlack('STARTED')				 
+				   populateGlobalVariables()
+                   notifyBuild('STARTED')				 
 				}
 			 }
 	    }
@@ -140,18 +124,18 @@ pipeline {
 	post {
         success {
 			script {                
-				notifySlack(currentBuild.result)
+				notifyBuild(currentBuild.result)
             }
             
         }
         failure {
              script {                
-				notifySlack(currentBuild.result)
+				notifyBuild(currentBuild.result)
             }
         }
         unstable {
              script {              
-				notifySlack(currentBuild.result)
+				notifyBuild(currentBuild.result)
             }
         }
     }
