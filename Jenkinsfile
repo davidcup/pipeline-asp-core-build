@@ -37,17 +37,18 @@ def notifyBuild(def buildStatus) {
 
 @NonCPS
 def notifySlack(text, channel, attachments) {    
-	
-    withCredentials([string(credentialsId: 'slack-url', variable: 'slackurl')]) {
-		def jenkinsIcon = 'https://wiki.jenkins-ci.org/download/attachments/2916393/logo.png'
+	script{
+		withCredentials([string(credentialsId: 'slack-url', variable: 'slackurl')]) {
+			def jenkinsIcon = 'https://wiki.jenkins-ci.org/download/attachments/2916393/logo.png'
 
-		def payload = JsonOutput.toJson([text: text,
-			channel: channel,
-			username: "Jenkins",
-			icon_url: jenkinsIcon,
-			attachments: attachments
-		])
-		sh "curl -X POST --data-urlencode \'payload=${payload}\' '${slackurl}'"
+			def payload = JsonOutput.toJson([text: text,
+				channel: channel,
+				username: "Jenkins",
+				icon_url: jenkinsIcon,
+				attachments: attachments
+			])
+			sh "curl -X POST --data-urlencode \'payload=${payload}\' ${slackurl}"
+		}
 	}
 }
 
@@ -84,6 +85,7 @@ pipeline {
 	
 	environment {
         BUILD_USER = ''
+		SLACK_CREDENTIALS = credentials('slack-url')
     }
 
     options { 
@@ -132,7 +134,7 @@ pipeline {
 
 					// Strip the branch name out of the job name (ex: "Job Name/branch1" -> "Job Name")
 					jobName = jobName.getAt(0..(jobName.indexOf('/') - 1))
-					
+					echo "Database engine is ${SLACK_CREDENTIALS}"
 					
 					sh(script: 'dotnet restore AspNetCoreApiDemo.sln', returnStdout: true)
 					
