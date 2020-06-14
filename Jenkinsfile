@@ -117,11 +117,11 @@ pipeline {
 							footer: "DevOps Pipeline",
                             footer_icon: "https://platform.slack-edge.com/img/default_application_icon.png",
 							author_name: "${author}",
-							text: "Started by User\n${env.BUILD_USER_ID}",
+							text: "Started by User\n${BUILD_USER}",
 							fields: [
 								[
 									title: "Repository Information",
-									value: "REPO: ${repoName}, BR: ${env.GIT_BRANCH}",
+									value: "Repo: ${repoName}\nBranch: ${env.GIT_BRANCH}",
 									short: true
 								],
 								[
