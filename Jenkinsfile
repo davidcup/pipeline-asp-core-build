@@ -114,8 +114,8 @@ pipeline {
 							title: "${jobName}, Build #${env.BUILD_NUMBER}",
 							title_link: "${env.BUILD_URL}",
 							color: "${buildColor}",
-							footer : "DevOps Pipeline",
-                            footer_icon: ":ghost:"
+							footer: "DevOps Pipeline",
+                            footer_icon: "https://platform.slack-edge.com/img/default_application_icon.png",
 							author_name: "${author}",
 							text: "Started by User\n{${BUILD_USER}}",
 							fields: [
