@@ -147,7 +147,7 @@ pipeline {
 						sh "dotnet /opt/sonar-scanner/SonarScanner.MSBuild.dll begin \
 						/k:'aspnetcore-apidemo' \
 						/v:'${version}' \
-						/d:sonar.cs.opencover.reportsPaths=Math.Test/coverage.opencover.xml \
+						/d:sonar.cs.opencover.reportsPaths=TestResults/coverage.opencover.xml \
 						/d:sonar.coverage.exclusions='**Test*.cs' \
 						/d:sonar.host.url='http://10.0.0.11:9095'"
 					}					   
