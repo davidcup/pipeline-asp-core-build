@@ -144,7 +144,12 @@ pipeline {
 			steps {	           
 			    script{				
 					withSonarQubeEnv('sonarqube') {
-						sh "dotnet /opt/sonar-scanner/SonarScanner.MSBuild.dll begin /k:'aspnetcore-apidemo' /v:'${version}' /d:sonar.host.url='http://10.0.0.11:9095'"
+						sh "dotnet /opt/sonar-scanner/SonarScanner.MSBuild.dll begin \
+						/k:'aspnetcore-apidemo' \
+						/v:'${version}' \
+						/d:sonar.cs.opencover.reportsPaths=Math.Test/coverage.opencover.xml \
+						/d:sonar.coverage.exclusions='**Test*.cs' \
+						/d:sonar.host.url='http://10.0.0.11:9095'"
 					}					   
 			   }
 			}
@@ -157,11 +162,24 @@ pipeline {
             }
         }
 		
+		stage('\u278C Tests')
+		{
+			steps {
+				dir('test/CompanyApi.Tests') {
+					sh 'dotnet test CompanyApi.Tests.csproj /p:CollectCoverage=true /p:CoverletOutputFormat=opencover -c Release --logger "trx;LogFileName=TestResult.xml"'
+					sh 'cp -R TestResults/TestResult.xml .' 
+					step([$class: 'MSTestPublisher', testResultsFile: 'TestResult.xml', failOnError: true, keepLongStdio: true])
+				}
+			}
+		}
+		
 		stage('\u278D Sonar End') {
 			steps {					
 				sh 'dotnet /opt/sonar-scanner/SonarScanner.MSBuild.dll end'				
 			}
 		}
+		
+		
     }
 	
 	post {
