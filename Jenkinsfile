@@ -150,6 +150,7 @@ pipeline {
 							/v:'${env.BUILD_NUMBER}' \
 							/d:sonar.cs.opencover.reportsPaths=TestResults/coverage.opencover.xml \
 							/d:sonar.coverage.exclusions='**Test*.cs' \
+							/d:sonar.analysis.mode=publish \
 							/d:sonar.login=${sonarLogin} \
 							/d:sonar.host.url='http://10.0.0.11:9095'"
 						}	
@@ -159,8 +160,7 @@ pipeline {
         }  
 		  
         stage('\u278C Build') {
-            steps {	
-					sh 'cp /home/david/jenkins/workspace/github-davidcup/.sonarqube/out/.sonar/report-task.txt .'			
+            steps {												
 					sh 'dotnet restore AspNetCoreApiDemo.sln'				
 					sh 'dotnet build AspNetCoreApiDemo.sln -c Release'
             }
