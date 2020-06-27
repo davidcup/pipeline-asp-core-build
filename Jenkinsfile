@@ -162,7 +162,7 @@ pipeline {
             }
         }
 		
-		stage('\u278D Tests') {
+		stage('\u278C Tests') {
 			steps {
 				dir('test/CompanyApi.Tests') {
 					sh 'dotnet test CompanyApi.Tests.csproj /p:CollectCoverage=true /p:CoverletOutputFormat=opencover -c Release --logger "trx;LogFileName=TestResult.xml"'
@@ -172,24 +172,11 @@ pipeline {
 			}
 		}
 		
-		stage('\u278E Sonar End') {
-			steps {	
-				script{				
-					withSonarQubeEnv('sonarqube') {		
-						sh 'dotnet /opt/sonar-scanner/SonarScanner.MSBuild.dll end'		
-					}				
-				}
+		stage('\u278D Sonar End') {
+			steps {					
+				sh 'dotnet /opt/sonar-scanner/SonarScanner.MSBuild.dll end'				
 			}
 		}
-		
-		stage('\u278F Quality Gate'){
-			steps {	
-				script{		
-					echo "Quality Gate"  
-				}
-			}
-		}
-		
 		
 		
     }
