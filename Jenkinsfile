@@ -198,6 +198,7 @@ pipeline {
 		stage('\u278F Quality\n Gate'){
 			 steps {
 				 script{	
+				    sh 'sleep 300'
 					withSonarQubeEnv('sonarqube') {		
 						timeout(time: 15, unit: 'MINUTES') {
 							def qg = waitForQualityGate()
