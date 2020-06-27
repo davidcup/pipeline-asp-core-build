@@ -186,10 +186,10 @@ pipeline {
 			steps {	
 				script{		
 					echo "Quality Gate"  
-					}
 				}
 			}
 		}
+		
 		
 		
     }
