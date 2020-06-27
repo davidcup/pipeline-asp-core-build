@@ -146,11 +146,10 @@ pipeline {
                     withCredentials([string(credentialsId: 'sonar-token', variable: 'sonarLogin')]) {				
 						withSonarQubeEnv('sonarqube') {
 							sh "dotnet /opt/sonar-scanner/SonarScanner.MSBuild.dll begin \
-							/k:'aspnetcore-apidemo' \
+							/k:'api-dotnetcore-demo' \
 							/v:'${env.BUILD_NUMBER}' \
 							/d:sonar.cs.opencover.reportsPaths=TestResults/coverage.opencover.xml \
-							/d:sonar.coverage.exclusions='**Test*.cs' \
-							/d:sonar.analysis.mode=preview \
+							/d:sonar.coverage.exclusions='**Test*.cs' \							
 							/d:sonar.login=${sonarLogin} \
 							/d:sonar.host.url='http://10.0.0.11:9095'"
 						}	
