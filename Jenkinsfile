@@ -150,7 +150,7 @@ pipeline {
 							/v:'${env.BUILD_NUMBER}' \
 							/d:sonar.cs.opencover.reportsPaths=TestResults/coverage.opencover.xml \
 							/d:sonar.coverage.exclusions='**Test*.cs' \
-							/d:sonar.analysis.mode=publish \
+							/d:sonar.analysis.mode=preview \
 							/d:sonar.login=${sonarLogin} \
 							/d:sonar.host.url='http://10.0.0.11:9095'"
 						}	
@@ -198,7 +198,7 @@ pipeline {
 		stage('\u278F Quality\n Gate'){
 			 steps {
 				 script{	
-				    sh 'sleep 300'
+				    sh 'sleep 100'
 					withSonarQubeEnv('sonarqube') {		
 						timeout(time: 15, unit: 'MINUTES') {
 							def qg = waitForQualityGate()
