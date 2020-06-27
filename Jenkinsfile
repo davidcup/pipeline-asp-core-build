@@ -159,7 +159,6 @@ pipeline {
             steps {												
 					sh 'dotnet restore AspNetCoreApiDemo.sln'				
 					sh 'dotnet build AspNetCoreApiDemo.sln -c Release'
-					sh 'dotnet /opt/sonar-scanner/SonarScanner.MSBuild.dll end'	
             }
         }
 		
@@ -173,17 +172,12 @@ pipeline {
 			}
 		}
 		
-		
-		
-		stage('\u278F Quality Gate'){
-			 steps {
-				 script{		
-					timeout(time: 15, unit: 'MINUTES') {
-						def qg = waitForQualityGate()
-						if (qg.status != 'OK') {
-						  error "Pipeline aborted due to quality gate failure: ${qg.status}"
-						}
-					}
+		stage('\u278E Sonar End') {
+			steps {	
+				script{				
+					withSonarQubeEnv('sonarqube') {		
+						sh 'dotnet /opt/sonar-scanner/SonarScanner.MSBuild.dll end'		
+					}				
 				}
 			}
 		}
