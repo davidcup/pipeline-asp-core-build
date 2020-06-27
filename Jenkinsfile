@@ -159,7 +159,8 @@ pipeline {
         }  
 		  
         stage('\u278C Build') {
-            steps {												
+            steps {	
+					sh 'cp /home/david/jenkins/workspace/github-davidcup/.sonarqube/out/.sonar/report-task.txt .'			
 					sh 'dotnet restore AspNetCoreApiDemo.sln'				
 					sh 'dotnet build AspNetCoreApiDemo.sln -c Release'
             }
