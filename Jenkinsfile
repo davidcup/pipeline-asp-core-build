@@ -176,10 +176,6 @@ pipeline {
 		}
 		
 		stage('\u278E Sonar End') {
-			options {
-				timeout(time: 5, unit: 'MINUTES')
-				retry(2)
-			}
 			environment {
 				sonarqubeScannerHome = tool 'SonarQubeScanner'
 			}
@@ -189,10 +185,6 @@ pipeline {
 						withSonarQubeEnv('sonarqube') {		
 							try {
 								sh 'dotnet /opt/sonar-scanner/SonarScanner.MSBuild.dll end /d:sonar.login=${sonarLogin}'
-								def qg = waitForQualityGate()
-								if (qg.status != 'OK') {
-									  error "Pipeline aborted due to quality gate failure: ${qg.status}"
-								}
 							} catch (error) {
 							    echo "error occured"  
 							}
@@ -202,7 +194,20 @@ pipeline {
 			}
 		}
 		
-		
+		stage('\u278F Quality\n Gate'){
+			 steps {
+				 script{	
+					withSonarQubeEnv('sonarqube') {		
+						timeout(time: 15, unit: 'MINUTES') {
+							def qg = waitForQualityGate()
+							if (qg.status != 'OK') {
+							  error "Pipeline aborted due to quality gate failure: ${qg.status}"
+							}
+						}
+					}
+				}
+			}
+		}
 
     }
 	
