@@ -150,7 +150,7 @@ pipeline {
 							/v:'${env.BUILD_NUMBER}' \
 							/d:sonar.cs.opencover.reportsPaths=TestResults/coverage.opencover.xml \
 							/d:sonar.coverage.exclusions='**Test*.cs' \
-							/d:sonar.analysis.mode=preview \
+							/d:sonar.analysis.mode= \
 							/d:sonar.login=${sonarLogin} \
 							/d:sonar.host.url='http://10.0.0.11:9095'"
 						}	
