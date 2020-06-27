@@ -149,6 +149,7 @@ pipeline {
 						/v:'${version}' \
 						/d:sonar.cs.opencover.reportsPaths=TestResults/coverage.opencover.xml \
 						/d:sonar.coverage.exclusions='**Test*.cs' \
+						/d:sonar.login=${sonar-token} \
 						/d:sonar.host.url='http://10.0.0.11:9095'"
 					}					   
 			   }
@@ -173,11 +174,18 @@ pipeline {
 		}
 		
 		stage('\u278E Sonar End') {
+			environment {
+				sonarqubeScannerHome = tool 'SonarQubeScanner'
+			}
 			steps {	
 				script{				
 					withSonarQubeEnv('sonarqube') {		
-						sh 'dotnet /opt/sonar-scanner/SonarScanner.MSBuild.dll end'		
-					}				
+						try {
+							sh 'dotnet /opt/sonar-scanner/SonarScanner.MSBuild.dll end /d:sonar.login=${sonar-token}'
+						} catch (error) {
+						echo "error occured"  
+						}
+					}						
 				}
 			}
 		}
