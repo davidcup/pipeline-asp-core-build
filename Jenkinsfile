@@ -146,9 +146,8 @@ pipeline {
 			    script{				
 					withSonarQubeEnv('sonarqube') {
 							sh "dotnet /opt/sonar-scanner/SonarScanner.MSBuild.dll begin \
-							/k:'api-dotnetcore-demo' \
+							/k:'aspnetcore-apidemo' \
 							/v:'${env.BUILD_NUMBER}' \
-							/d:sonar.cs.opencover.reportsPaths=TestResults/coverage.opencover.xml \
 							/d:sonar.coverage.exclusions='**Test*.cs' \
 							/d:sonar.login=${SONAR_CREDENTIALS} \
 							/d:sonar.host.url='http://10.0.0.11:9095'"
