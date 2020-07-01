@@ -174,7 +174,10 @@ pipeline {
 			}
 		}
 		
-		stage('\u278E \nSonar End') {			
+		stage('\u278E Sonar End') {
+			environment {
+				sonarqubeScannerHome = tool 'SonarQubeScanner'
+			}
 			steps {	
 				script{				
 					withSonarQubeEnv('sonarqube') {								
