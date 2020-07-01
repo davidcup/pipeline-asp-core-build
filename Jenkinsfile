@@ -187,6 +187,23 @@ pipeline {
 			}
 		}
 		
+		stage("\u278F Quality Gate") {
+			steps {
+				script {
+					timeout(time: 1, unit: 'MINUTES') {
+					  def qg = waitForQualityGate()
+					  if (qg.status == "ERROR") {
+					   echo "Failed Quality Gates";
+					   waitForQualityGate abortPipeline: true
+					  }
+					  if (qg.status == 'OK') {
+					   echo "Passed Quality Gates!";
+					  }
+					}
+				}
+			}
+		}
+		
     }
 	
 	post {
