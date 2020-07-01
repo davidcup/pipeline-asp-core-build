@@ -174,18 +174,11 @@ pipeline {
 			}
 		}
 		
-		stage('\u278E Sonar End') {
-			environment {
-				sonarqubeScannerHome = tool 'SonarQubeScanner'
-			}
+		stage('\u278E \nSonar End') {			
 			steps {	
 				script{				
-					withSonarQubeEnv('sonarqube') {		
-						try {
-							    sh 'dotnet /opt/sonar-scanner/SonarScanner.MSBuild.dll end /d:sonar.login=${SONAR_CREDENTIALS}'
-				  		    } catch (error) {
-						        echo "error occured"  
-						}
+					withSonarQubeEnv('sonarqube') {								
+					    sh 'dotnet /opt/sonar-scanner/SonarScanner.MSBuild.dll end /d:sonar.login=${SONAR_CREDENTIALS}'				  		   
 					}											
 				}
 			}
